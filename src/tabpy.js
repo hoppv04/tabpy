@@ -26,26 +26,26 @@ function Tabpy(selector) {
 
   if (this.tabs.length !== this.panels.length) return;
 
+  this._originalHTML = this.container.innerHTML;
+
   this._init();
 }
 
 Tabpy.prototype._init = function () {
-  const tabActive = this.tabs[0];
-  tabActive.closest("li").classList.add("tabpy--active");
-
-  this.panels.forEach((panel) => (panel.hidden = true));
+  this._activeTab(this.tabs[0]);
 
   this.tabs.forEach((tab) => {
     tab.onclick = (event) => this._handleTabClick(event, tab);
   });
-
-  const panelActive = this.panels[0];
-  panelActive.hidden = false;
 };
 
 Tabpy.prototype._handleTabClick = function (event, tab) {
   event.preventDefault();
 
+  this._activeTab(tab);
+};
+
+Tabpy.prototype._activeTab = function (tab) {
   this.tabs.forEach((tab) => {
     tab.closest("li").classList.remove("tabpy--active");
   });
@@ -56,4 +56,33 @@ Tabpy.prototype._handleTabClick = function (event, tab) {
 
   const panelActive = document.querySelector(tab.getAttribute("href"));
   panelActive.hidden = false;
+};
+
+Tabpy.prototype.switch = function (input) {
+  let tabToActive = null;
+
+  if (typeof input === "string") {
+    tabToActive = this.tabs.find((tab) => tab.getAttribute("href") === input);
+    if (!tabToActive) {
+      console.error(`Tabpy: No panel found with ID '${input}'`);
+      return;
+    }
+  } else if (this.tabs.includes(input)) {
+    tabToActive = input;
+  }
+
+  if (!tabToActive) {
+    console.error(`Tabpy: Invalid input '${input}'`);
+    return;
+  }
+
+  this._activeTab(tabToActive);
+};
+
+Tabpy.prototype.destroy = function () {
+  this.container.innerHTML = this._originalHTML;
+  this.panels.forEach((panel) => (panel.hidden = false));
+  this.container = null;
+  this.tabs = null;
+  this.panels = null;
 };
