@@ -48,7 +48,8 @@ Tabpy.prototype._init = function () {
       )) ||
     this.tabs[0];
 
-  this._activateTab(tab);
+  this.currentTab = tab;
+  this._activateTab(tab, false);
 
   this.tabs.forEach((tab) => {
     tab.onclick = (event) => this._handleTabClick(event, tab);
@@ -58,10 +59,17 @@ Tabpy.prototype._init = function () {
 Tabpy.prototype._handleTabClick = function (event, tab) {
   event.preventDefault();
 
-  this._activateTab(tab);
+  this._tryActivateTab(tab);
 };
 
-Tabpy.prototype._activateTab = function (tab) {
+Tabpy.prototype._tryActivateTab = function (tab) {
+  if (this.currentTab !== tab) {
+    this._activateTab(tab);
+    this.currentTab = tab;
+  }
+};
+
+Tabpy.prototype._activateTab = function (tab, triggerOnChange = true) {
   this.tabs.forEach((tab) => {
     tab.closest("li").classList.remove("tabpy--active");
   });
@@ -80,7 +88,7 @@ Tabpy.prototype._activateTab = function (tab) {
     history.replaceState(null, null, `?${params}`);
   }
 
-  if (typeof this.opt.onChange === "function") {
+  if (triggerOnChange && typeof this.opt.onChange === "function") {
     this.opt.onChange({
       tab,
       panel: panelActive,
@@ -106,7 +114,7 @@ Tabpy.prototype.switch = function (input) {
     return;
   }
 
-  this._activateTab(tabToActivate);
+  his._tryActivateTab(tabToActivate);
 };
 
 Tabpy.prototype.destroy = function () {
@@ -115,4 +123,5 @@ Tabpy.prototype.destroy = function () {
   this.container = null;
   this.tabs = null;
   this.panels = null;
+  this.currentTab = null;
 };
