@@ -34,11 +34,15 @@ function Tabpy(selector, options = {}) {
 }
 
 Tabpy.prototype._init = function () {
-  const hash = location.hash;
+  const params = new URLSearchParams(location.search);
+  const tabSelector = params.get("tab");
+
   const tab =
     (this.opt.remember &&
-      hash &&
-      this.tabs.find((tabItem) => tabItem.getAttribute("href") === hash)) ||
+      tabSelector &&
+      this.tabs.find(
+        (tabItem) => tabItem.getAttribute("href") === tabSelector
+      )) ||
     this.tabs[0];
 
   this._activateTab(tab);
@@ -67,7 +71,11 @@ Tabpy.prototype._activateTab = function (tab) {
   panelActive.hidden = false;
 
   if (this.opt.remember) {
-    history.replaceState(null, null, tab.getAttribute("href"));
+    history.replaceState(
+      null,
+      null,
+      `?tab=${encodeURIComponent(tab.getAttribute("href"))}`
+    );
   }
 };
 
