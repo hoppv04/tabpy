@@ -26,9 +26,25 @@
     <div id="tab2">Tab2 content</div>
     <div id="tab3">Tab3 content</div>
 
+    <ul id="tabs2">
+      <!-- Tabs -->
+      <li><a href="#taba">Tab a</a></li>
+      <li><a href="#tabb">Tab b</a></li>
+      <li><a href="#tabc">Tab c</a></li>
+    </ul>
+
+    <!-- Panels -->
+    <div id="taba">Tab a content</div>
+    <div id="tabb">Tab b content</div>
+    <div id="tabc">Tab c content</div>
+
     <script src="./src//tabpy.js"></script>
     <script>
       const tabs = new Tabpy("#tabs", {
+        remember: true,
+      });
+
+      const tabs2 = new Tabpy("#tabs2", {
         remember: true,
       });
     </script>

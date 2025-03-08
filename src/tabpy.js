@@ -28,6 +28,7 @@ function Tabpy(selector, options = {}) {
 
   this.opt = { remember: false, ...options };
 
+  this.paramKey = selector.replace(/[^a-zA-Z0-9]/g, "");
   this._originalHTML = this.container.innerHTML;
 
   this._init();
@@ -35,13 +36,15 @@ function Tabpy(selector, options = {}) {
 
 Tabpy.prototype._init = function () {
   const params = new URLSearchParams(location.search);
-  const tabSelector = params.get("tab");
+  const tabSelector = params.get(this.paramKey);
 
   const tab =
     (this.opt.remember &&
       tabSelector &&
       this.tabs.find(
-        (tabItem) => tabItem.getAttribute("href") === tabSelector
+        (tabItem) =>
+          tabItem.getAttribute("href").replace(/[^a-zA-Z0-9]/g, "") ===
+          tabSelector
       )) ||
     this.tabs[0];
 
@@ -71,11 +74,10 @@ Tabpy.prototype._activateTab = function (tab) {
   panelActive.hidden = false;
 
   if (this.opt.remember) {
-    history.replaceState(
-      null,
-      null,
-      `?tab=${encodeURIComponent(tab.getAttribute("href"))}`
-    );
+    const params = new URLSearchParams(location.search);
+    const paramValue = tab.getAttribute("href").replace(/[^a-zA-Z0-9]/g, "");
+    params.set(this.paramKey, paramValue);
+    history.replaceState(null, null, `?${params}`);
   }
 };
 
