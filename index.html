@@ -42,6 +42,9 @@
     <script>
       const tabs = new Tabpy("#tabs", {
         remember: true,
+        onChange: (data) => {
+          console.log(data);
+        },
       });
 
       const tabs2 = new Tabpy("#tabs2", {
