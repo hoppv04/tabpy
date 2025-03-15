@@ -11,7 +11,26 @@ function Tabpy(selector, options = {}) {
     return;
   }
 
-  this.panels = this.tabs
+  this.panels = this.getPanels();
+
+  if (this.tabs.length !== this.panels.length) return;
+
+  this.opt = {
+    activeClassName: "tabpy--active",
+    remember: false,
+    onChange: null,
+    ...options,
+  };
+
+  this._cleanRegex = /[^a-zA-Z0-9]/g;
+  this.paramKey = selector.replace(this._cleanRegex, "");
+  this._originalHTML = this.container.innerHTML;
+
+  this._init();
+}
+
+Tabpy.prototype.getPanels = function () {
+  return (this.panels = this.tabs
     .map((tab) => {
       const panel = document.querySelector(tab.getAttribute("href"));
       if (!panel) {
@@ -22,17 +41,8 @@ function Tabpy(selector, options = {}) {
 
       return panel;
     })
-    .filter(Boolean);
-
-  if (this.tabs.length !== this.panels.length) return;
-
-  this.opt = { remember: false, onChange: null, ...options };
-
-  this.paramKey = selector.replace(/[^a-zA-Z0-9]/g, "");
-  this._originalHTML = this.container.innerHTML;
-
-  this._init();
-}
+    .filter(Boolean));
+};
 
 Tabpy.prototype._init = function () {
   const params = new URLSearchParams(location.search);
@@ -43,7 +53,7 @@ Tabpy.prototype._init = function () {
       tabSelector &&
       this.tabs.find(
         (tabItem) =>
-          tabItem.getAttribute("href").replace(/[^a-zA-Z0-9]/g, "") ===
+          tabItem.getAttribute("href").replace(this._cleanRegex, "") ===
           tabSelector
       )) ||
     this.tabs[0];
@@ -52,14 +62,11 @@ Tabpy.prototype._init = function () {
   this._activateTab(tab, false);
 
   this.tabs.forEach((tab) => {
-    tab.onclick = (event) => this._handleTabClick(event, tab);
+    tab.onclick = (event) => {
+      event.preventDefault();
+      this._tryActivateTab(tab);
+    };
   });
-};
-
-Tabpy.prototype._handleTabClick = function (event, tab) {
-  event.preventDefault();
-
-  this._tryActivateTab(tab);
 };
 
 Tabpy.prototype._tryActivateTab = function (tab) {
@@ -71,10 +78,10 @@ Tabpy.prototype._tryActivateTab = function (tab) {
 
 Tabpy.prototype._activateTab = function (tab, triggerOnChange = true) {
   this.tabs.forEach((tab) => {
-    tab.closest("li").classList.remove("tabpy--active");
+    tab.closest("li").classList.remove(this.opt.activeClassName);
   });
 
-  tab.closest("li").classList.add("tabpy--active");
+  tab.closest("li").classList.add(this.opt.activeClassName);
 
   this.panels.forEach((panel) => (panel.hidden = true));
 
@@ -83,8 +90,10 @@ Tabpy.prototype._activateTab = function (tab, triggerOnChange = true) {
 
   if (this.opt.remember) {
     const params = new URLSearchParams(location.search);
-    const paramValue = tab.getAttribute("href").replace(/[^a-zA-Z0-9]/g, "");
-    params.set(this.paramKey, paramValue);
+    params.set(
+      this.paramKey,
+      tab.getAttribute("href").replace(this._cleanRegex, "")
+    );
     history.replaceState(null, null, `?${params}`);
   }
 
