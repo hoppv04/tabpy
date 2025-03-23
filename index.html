@@ -6,41 +6,109 @@
     <title>Document</title>
     <link rel="stylesheet" href="./src/tabpy.css" />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       .tabpy--active a {
         color: red;
         font-weight: 600;
+      }
+
+      .demo1 {
+        background: #666;
+      }
+
+      .tabs1 {
+        display: flex;
+        list-style: none;
+      }
+
+      .tabs1 a {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px 20px;
+        background: #ccc;
+        border-bottom: 2px solid #ccc;
+      }
+
+      .tabs1 .tabpy--active a {
+        background: #fff;
+        border-color: red;
+      }
+
+      .demo1 .panels {
+        padding: 20px;
+        background: #fff;
+      }
+
+      .demo2 {
+        display: flex;
+        margin-top: 100px;
+      }
+
+      .demo2 .panels {
+        padding-left: 30px;
       }
     </style>
   </head>
   <body>
     <!-- Container -->
-    <ul id="tabs">
-      <!-- Tabs -->
-      <li><a href="#tab1">Tab 1</a></li>
-      <li><a href="#tab2">Tab 2</a></li>
-      <li><a href="#tab3">Tab 3</a></li>
-    </ul>
+    <div class="demo1">
+      <ul id="tabs1" class="tabs1">
+        <!-- Tabs -->
+        <li><a href="#tab1">Tab 1</a></li>
+        <li><a href="#tab2">Tab 2</a></li>
+        <li><a href="#tab3">Tab 3</a></li>
+      </ul>
 
-    <!-- Panels -->
-    <div id="tab1">Tab1 content</div>
-    <div id="tab2">Tab2 content</div>
-    <div id="tab3">Tab3 content</div>
+      <!-- Panels -->
+      <div class="panels">
+        <div id="tab1">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi,
+          facilis.
+        </div>
+        <div id="tab2">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur,
+          hic?
+        </div>
+        <div id="tab3">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+          quaerat?
+        </div>
+      </div>
+    </div>
 
-    <ul id="tabs2">
-      <!-- Tabs -->
-      <li><a href="#taba">Tab a</a></li>
-      <li><a href="#tabb">Tab b</a></li>
-      <li><a href="#tabc">Tab c</a></li>
-    </ul>
+    <div class="demo2">
+      <ul id="tabs2">
+        <!-- Tabs -->
+        <li><a href="#taba">Tab a</a></li>
+        <li><a href="#tabb">Tab b</a></li>
+        <li><a href="#tabc">Tab c</a></li>
+      </ul>
 
-    <!-- Panels -->
-    <div id="taba">Tab a content</div>
-    <div id="tabb">Tab b content</div>
-    <div id="tabc">Tab c content</div>
+      <!-- Panels -->
+      <div class="panels">
+        <div id="taba">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tenetur,
+          consequuntur.
+        </div>
+        <div id="tabb">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat,
+          natus.
+        </div>
+        <div id="tabc">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus,
+          delectus!
+        </div>
+      </div>
+    </div>
 
-    <script src="./src//tabpy.js"></script>
+    <script src="./src/tabpy.js"></script>
     <script>
-      const tabs = new Tabpy("#tabs", {
+      const tabs = new Tabpy("#tabs1", {
         remember: true,
         onChange: (data) => {
           console.log(data);
